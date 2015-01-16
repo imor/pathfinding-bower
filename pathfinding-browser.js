@@ -706,7 +706,7 @@ function Node(x, y, walkable) {
      * @type boolean
      */
     this.walkable = (walkable === undefined ? true : walkable);
-};
+}
 
 module.exports = Node;
 
@@ -1126,7 +1126,7 @@ function BestFirstFinder(opt) {
     this.heuristic = function(dx, dy) {
         return orig(dx, dy) * 1000000;
     };
-};
+}
 
 BestFirstFinder.prototype = new AStarFinder();
 BestFirstFinder.prototype.constructor = BestFirstFinder;
@@ -1712,8 +1712,10 @@ IDAStarFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
         //    return h(a, end) - h(b, end);
         //});
 
+        
+        /*jshint -W084 *///Disable warning: Expected a conditional expression and instead saw an assignment
         for(k = 0, min = Infinity; neighbour = neighbours[k]; ++k) {
-
+        /*jshint +W084 *///Enable warning: Expected a conditional expression and instead saw an assignment
             if(this.trackRecursion) {
                 // Retain a copy for visualisation. Due to recursion, this
                 // node may be part of other paths too.
@@ -2215,8 +2217,9 @@ JPFMoveDiagonallyIfNoObstacles.prototype._findNeighbors = function(node) {
         }
         // search horizontally/vertically
         else {
+            var isNextWalkable;
             if (dx !== 0) {
-                var isNextWalkable = grid.isWalkableAt(x + dx, y);
+                isNextWalkable = grid.isWalkableAt(x + dx, y);
                 var isTopWalkable = grid.isWalkableAt(x, y + 1);
                 var isBottomWalkable = grid.isWalkableAt(x, y - 1);
 
@@ -2237,7 +2240,7 @@ JPFMoveDiagonallyIfNoObstacles.prototype._findNeighbors = function(node) {
                 }
             }
             else if (dy !== 0) {
-                var isNextWalkable = grid.isWalkableAt(x, y + dy);
+                isNextWalkable = grid.isWalkableAt(x, y + dy);
                 var isRightWalkable = grid.isWalkableAt(x + 1, y);
                 var isLeftWalkable = grid.isWalkableAt(x - 1, y);
 
