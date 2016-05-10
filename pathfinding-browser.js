@@ -398,9 +398,9 @@ var DiagonalMovement = _dereq_('./DiagonalMovement');
 /**
  * The Grid class, which serves as the encapsulation of the layout of the nodes.
  * @constructor
- * @param {number|Array.<Array.<(number|boolean)>>} width_or_matrix Number of columns of the grid, or matrix
+ * @param {number|Array<Array<(number|boolean)>>} width_or_matrix Number of columns of the grid, or matrix
  * @param {number} height Number of rows of the grid.
- * @param {Array.<Array.<(number|boolean)>>} [matrix] - A 0-1 matrix
+ * @param {Array<Array<(number|boolean)>>} [matrix] - A 0-1 matrix
  *     representing the walkable status of the nodes(0 or false for walkable).
  *     If the matrix is not supplied, all the nodes will be walkable.  */
 function Grid(width_or_matrix, height, matrix) {
@@ -436,14 +436,13 @@ function Grid(width_or_matrix, height, matrix) {
  * @private
  * @param {number} width
  * @param {number} height
- * @param {Array.<Array.<number|boolean>>} [matrix] - A 0-1 matrix representing
+ * @param {Array<Array<number|boolean>>} [matrix] - A 0-1 matrix representing
  *     the walkable status of the nodes.
  * @see Grid
  */
 Grid.prototype._buildNodes = function(width, height, matrix) {
     var i, j,
-        nodes = new Array(height),
-        row;
+        nodes = new Array(height);
 
     for (i = 0; i < height; ++i) {
         nodes[i] = new Array(width);
@@ -623,8 +622,7 @@ Grid.prototype.clone = function() {
         thisNodes = this.nodes,
 
         newGrid = new Grid(width, height),
-        newNodes = new Array(height),
-        row;
+        newNodes = new Array(height);
 
     for (i = 0; i < height; ++i) {
         newNodes[i] = new Array(width);
@@ -725,7 +723,7 @@ module.exports = Node;
  * Backtrace according to the parent records and return the path.
  * (including both start and end nodes)
  * @param {Node} node End node
- * @return {Array.<Array.<number>>} the path
+ * @return {Array<Array<number>>} the path
  */
 function backtrace(node) {
     var path = [[node.x, node.y]];
@@ -752,7 +750,7 @@ exports.biBacktrace = biBacktrace;
 
 /**
  * Compute the length of the path.
- * @param {Array.<Array.<number>>} path The path
+ * @param {Array<Array<number>>} path The path
  * @return {number} The length of the path
  */
 function pathLength(path) {
@@ -777,7 +775,7 @@ exports.pathLength = pathLength;
  * @param {number} y0 Start y coordinate
  * @param {number} x1 End x coordinate
  * @param {number} y1 End y coordinate
- * @return {Array.<Array.<number>>} The coordinates on the line
+ * @return {Array<Array<number>>} The coordinates on the line
  */
 function interpolate(x0, y0, x1, y1) {
     var abs = Math.abs,
@@ -818,8 +816,8 @@ exports.interpolate = interpolate;
 /**
  * Given a compressed path, return a new path that has all the segments
  * in it interpolated.
- * @param {Array.<Array.<number>>} path The path
- * @return {Array.<Array.<number>>} expanded path
+ * @param {Array<Array<number>>} path The path
+ * @return {Array<Array<number>>} expanded path
  */
 function expandPath(path) {
     var expanded = [],
@@ -854,7 +852,7 @@ exports.expandPath = expandPath;
  * Smoothen the give path.
  * The original path will not be modified; a new path will be returned.
  * @param {PF.Grid} grid
- * @param {Array.<Array.<number>>} path The path
+ * @param {Array<Array<number>>} path The path
  */
 function smoothenPath(grid, path) {
     var len = path.length,
@@ -903,8 +901,8 @@ exports.smoothenPath = smoothenPath;
 /**
  * Compress a path, remove redundant nodes without altering the shape
  * The original path is not modified
- * @param {Array.<Array.<number>>} path The path
- * @return {Array.<Array.<number>>} The compressed path
+ * @param {Array<Array<number>>} path The path
+ * @return {Array<Array<number>>} The compressed path
  */
 function compressPath(path) {
 
@@ -974,7 +972,7 @@ module.exports = {
     'Node'                      : _dereq_('./core/Node'),
     'Grid'                      : _dereq_('./core/Grid'),
     'Util'                      : _dereq_('./core/Util'),
-	'DiagonalMovement'          : _dereq_('./core/DiagonalMovement'),
+    'DiagonalMovement'          : _dereq_('./core/DiagonalMovement'),
     'Heuristic'                 : _dereq_('./core/Heuristic'),
     'AStarFinder'               : _dereq_('./finders/AStarFinder'),
     'BestFirstFinder'           : _dereq_('./finders/BestFirstFinder'),
@@ -995,17 +993,18 @@ var Heuristic  = _dereq_('../core/Heuristic');
 var DiagonalMovement = _dereq_('../core/DiagonalMovement');
 
 /**
- * A* path-finder.
- * based upon https://github.com/bgrins/javascript-astar
+ * A* path-finder. Based upon https://github.com/bgrins/javascript-astar
  * @constructor
- * @param {object} opt
- * @param {boolean} opt.allowDiagonal Whether diagonal movement is allowed. Deprecated, use diagonalMovement instead.
- * @param {boolean} opt.dontCrossCorners Disallow diagonal movement touching block corners. Deprecated, use diagonalMovement instead.
+ * @param {Object} opt
+ * @param {boolean} opt.allowDiagonal Whether diagonal movement is allowed.
+ *     Deprecated, use diagonalMovement instead.
+ * @param {boolean} opt.dontCrossCorners Disallow diagonal movement touching 
+ *     block corners. Deprecated, use diagonalMovement instead.
  * @param {DiagonalMovement} opt.diagonalMovement Allowed diagonal movement.
  * @param {function} opt.heuristic Heuristic function to estimate the distance
  *     (defaults to manhattan).
- * @param {integer} opt.weight Weight to apply to the heuristic to allow for suboptimal paths, 
- *     in order to speed up the search.
+ * @param {number} opt.weight Weight to apply to the heuristic to allow for
+ *     suboptimal paths, in order to speed up the search.
  */
 function AStarFinder(opt) {
     opt = opt || {};
@@ -1027,8 +1026,8 @@ function AStarFinder(opt) {
         }
     }
 
-    //When diagonal movement is allowed the manhattan heuristic is not admissible
-    //It should be octile instead
+    // When diagonal movement is allowed the manhattan heuristic is not
+    //admissible. It should be octile instead
     if (this.diagonalMovement === DiagonalMovement.Never) {
         this.heuristic = opt.heuristic || Heuristic.manhattan;
     } else {
@@ -1038,7 +1037,7 @@ function AStarFinder(opt) {
 
 /**
  * Find and return the the path.
- * @return {Array.<[number, number]>} The path, including both start and
+ * @return {Array<Array<number>>} The path, including both start and
  *     end positions.
  */
 AStarFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
@@ -1122,9 +1121,11 @@ var AStarFinder = _dereq_('./AStarFinder');
  * Best-First-Search path-finder.
  * @constructor
  * @extends AStarFinder
- * @param {object} opt
- * @param {boolean} opt.allowDiagonal Whether diagonal movement is allowed. Deprecated, use diagonalMovement instead.
- * @param {boolean} opt.dontCrossCorners Disallow diagonal movement touching block corners. Deprecated, use diagonalMovement instead.
+ * @param {Object} opt
+ * @param {boolean} opt.allowDiagonal Whether diagonal movement is allowed.
+ *     Deprecated, use diagonalMovement instead.
+ * @param {boolean} opt.dontCrossCorners Disallow diagonal movement touching
+ *     block corners. Deprecated, use diagonalMovement instead.
  * @param {DiagonalMovement} opt.diagonalMovement Allowed diagonal movement.
  * @param {function} opt.heuristic Heuristic function to estimate the distance
  *     (defaults to manhattan).
@@ -1153,14 +1154,16 @@ var DiagonalMovement = _dereq_('../core/DiagonalMovement');
  * A* path-finder.
  * based upon https://github.com/bgrins/javascript-astar
  * @constructor
- * @param {object} opt
- * @param {boolean} opt.allowDiagonal Whether diagonal movement is allowed. Deprecated, use diagonalMovement instead.
- * @param {boolean} opt.dontCrossCorners Disallow diagonal movement touching block corners. Deprecated, use diagonalMovement instead.
+ * @param {Object} opt
+ * @param {boolean} opt.allowDiagonal Whether diagonal movement is allowed.
+ *     Deprecated, use diagonalMovement instead.
+ * @param {boolean} opt.dontCrossCorners Disallow diagonal movement touching
+ *     block corners. Deprecated, use diagonalMovement instead.
  * @param {DiagonalMovement} opt.diagonalMovement Allowed diagonal movement.
  * @param {function} opt.heuristic Heuristic function to estimate the distance
  *     (defaults to manhattan).
- * @param {integer} opt.weight Weight to apply to the heuristic to allow for suboptimal paths, 
- *     in order to speed up the search.
+ * @param {number} opt.weight Weight to apply to the heuristic to allow for
+ *     suboptimal paths, in order to speed up the search.
  */
 function BiAStarFinder(opt) {
     opt = opt || {};
@@ -1193,7 +1196,7 @@ function BiAStarFinder(opt) {
 
 /**
  * Find and return the the path.
- * @return {Array.<[number, number]>} The path, including both start and
+ * @return {Array<Array<number>>} The path, including both start and
  *     end positions.
  */
 BiAStarFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
@@ -1255,7 +1258,8 @@ BiAStarFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
             // can be reached with smaller cost from the current node
             if (!neighbor.opened || ng < neighbor.g) {
                 neighbor.g = ng;
-                neighbor.h = neighbor.h || weight * heuristic(abs(x - endX), abs(y - endY));
+                neighbor.h = neighbor.h ||
+                    weight * heuristic(abs(x - endX), abs(y - endY));
                 neighbor.f = neighbor.g + neighbor.h;
                 neighbor.parent = node;
 
@@ -1299,7 +1303,8 @@ BiAStarFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
             // can be reached with smaller cost from the current node
             if (!neighbor.opened || ng < neighbor.g) {
                 neighbor.g = ng;
-                neighbor.h = neighbor.h || weight * heuristic(abs(x - startX), abs(y - startY));
+                neighbor.h = neighbor.h ||
+                    weight * heuristic(abs(x - startX), abs(y - startY));
                 neighbor.f = neighbor.g + neighbor.h;
                 neighbor.parent = node;
 
@@ -1329,9 +1334,11 @@ var BiAStarFinder = _dereq_('./BiAStarFinder');
  * Bi-direcitional Best-First-Search path-finder.
  * @constructor
  * @extends BiAStarFinder
- * @param {object} opt
- * @param {boolean} opt.allowDiagonal Whether diagonal movement is allowed. Deprecated, use diagonalMovement instead.
- * @param {boolean} opt.dontCrossCorners Disallow diagonal movement touching block corners. Deprecated, use diagonalMovement instead.
+ * @param {Object} opt
+ * @param {boolean} opt.allowDiagonal Whether diagonal movement is allowed.
+ *     Deprecated, use diagonalMovement instead.
+ * @param {boolean} opt.dontCrossCorners Disallow diagonal movement touching
+ *     block corners. Deprecated, use diagonalMovement instead.
  * @param {DiagonalMovement} opt.diagonalMovement Allowed diagonal movement.
  * @param {function} opt.heuristic Heuristic function to estimate the distance
  *     (defaults to manhattan).
@@ -1358,8 +1365,10 @@ var DiagonalMovement = _dereq_('../core/DiagonalMovement');
  * Bi-directional Breadth-First-Search path finder.
  * @constructor
  * @param {object} opt
- * @param {boolean} opt.allowDiagonal Whether diagonal movement is allowed. Deprecated, use diagonalMovement instead.
- * @param {boolean} opt.dontCrossCorners Disallow diagonal movement touching block corners. Deprecated, use diagonalMovement instead.
+ * @param {boolean} opt.allowDiagonal Whether diagonal movement is allowed.
+ *     Deprecated, use diagonalMovement instead.
+ * @param {boolean} opt.dontCrossCorners Disallow diagonal movement touching
+ *     block corners. Deprecated, use diagonalMovement instead.
  * @param {DiagonalMovement} opt.diagonalMovement Allowed diagonal movement.
  */
 function BiBreadthFirstFinder(opt) {
@@ -1384,7 +1393,7 @@ function BiBreadthFirstFinder(opt) {
 
 /**
  * Find and return the the path.
- * @return {Array.<[number, number]>} The path, including both start and
+ * @return {Array<Array<number>>} The path, including both start and
  *     end positions.
  */
 BiBreadthFirstFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
@@ -1472,9 +1481,11 @@ var BiAStarFinder = _dereq_('./BiAStarFinder');
  * Bi-directional Dijkstra path-finder.
  * @constructor
  * @extends BiAStarFinder
- * @param {object} opt
- * @param {boolean} opt.allowDiagonal Whether diagonal movement is allowed. Deprecated, use diagonalMovement instead.
- * @param {boolean} opt.dontCrossCorners Disallow diagonal movement touching block corners. Deprecated, use diagonalMovement instead.
+ * @param {Object} opt
+ * @param {boolean} opt.allowDiagonal Whether diagonal movement is allowed.
+ *     Deprecated, use diagonalMovement instead.
+ * @param {boolean} opt.dontCrossCorners Disallow diagonal movement touching
+ *     block corners. Deprecated, use diagonalMovement instead.
  * @param {DiagonalMovement} opt.diagonalMovement Allowed diagonal movement.
  */
 function BiDijkstraFinder(opt) {
@@ -1496,9 +1507,11 @@ var DiagonalMovement = _dereq_('../core/DiagonalMovement');
 /**
  * Breadth-First-Search path finder.
  * @constructor
- * @param {object} opt
- * @param {boolean} opt.allowDiagonal Whether diagonal movement is allowed. Deprecated, use diagonalMovement instead.
- * @param {boolean} opt.dontCrossCorners Disallow diagonal movement touching block corners. Deprecated, use diagonalMovement instead.
+ * @param {Object} opt
+ * @param {boolean} opt.allowDiagonal Whether diagonal movement is allowed.
+ *     Deprecated, use diagonalMovement instead.
+ * @param {boolean} opt.dontCrossCorners Disallow diagonal movement touching
+ *     block corners. Deprecated, use diagonalMovement instead.
  * @param {DiagonalMovement} opt.diagonalMovement Allowed diagonal movement.
  */
 function BreadthFirstFinder(opt) {
@@ -1522,7 +1535,7 @@ function BreadthFirstFinder(opt) {
 
 /**
  * Find and return the the path.
- * @return {Array.<[number, number]>} The path, including both start and
+ * @return {Array<Array<number>>} The path, including both start and
  *     end positions.
  */
 BreadthFirstFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
@@ -1575,9 +1588,11 @@ var AStarFinder = _dereq_('./AStarFinder');
  * Dijkstra path-finder.
  * @constructor
  * @extends AStarFinder
- * @param {object} opt
- * @param {boolean} opt.allowDiagonal Whether diagonal movement is allowed. Deprecated, use diagonalMovement instead.
- * @param {boolean} opt.dontCrossCorners Disallow diagonal movement touching block corners. Deprecated, use diagonalMovement instead.
+ * @param {Object} opt
+ * @param {boolean} opt.allowDiagonal Whether diagonal movement is allowed.
+ *     Deprecated, use diagonalMovement instead.
+ * @param {boolean} opt.dontCrossCorners Disallow diagonal movement touching
+ *     block corners. Deprecated, use diagonalMovement instead.
  * @param {DiagonalMovement} opt.diagonalMovement Allowed diagonal movement.
  */
 function DijkstraFinder(opt) {
@@ -1612,18 +1627,20 @@ var DiagonalMovement = _dereq_('../core/DiagonalMovement');
  * @author Gerard Meier (www.gerardmeier.com)
  *
  * @constructor
- * @param {object} opt
- * @param {boolean} opt.allowDiagonal Whether diagonal movement is allowed. Deprecated, use diagonalMovement instead.
- * @param {boolean} opt.dontCrossCorners Disallow diagonal movement touching block corners. Deprecated, use diagonalMovement instead.
+ * @param {Object} opt
+ * @param {boolean} opt.allowDiagonal Whether diagonal movement is allowed.
+ *     Deprecated, use diagonalMovement instead.
+ * @param {boolean} opt.dontCrossCorners Disallow diagonal movement touching
+ *     block corners. Deprecated, use diagonalMovement instead.
  * @param {DiagonalMovement} opt.diagonalMovement Allowed diagonal movement.
  * @param {function} opt.heuristic Heuristic function to estimate the distance
  *     (defaults to manhattan).
- * @param {integer} opt.weight Weight to apply to the heuristic to allow for suboptimal paths,
- *     in order to speed up the search.
- * @param {object} opt.trackRecursion Whether to track recursion for statistical purposes.
- * @param {object} opt.timeLimit Maximum execution time. Use <= 0 for infinite.
+ * @param {number} opt.weight Weight to apply to the heuristic to allow for
+ *     suboptimal paths, in order to speed up the search.
+ * @param {boolean} opt.trackRecursion Whether to track recursion for
+ *     statistical purposes.
+ * @param {number} opt.timeLimit Maximum execution time. Use <= 0 for infinite.
  */
-
 function IDAStarFinder(opt) {
     opt = opt || {};
     this.allowDiagonal = opt.allowDiagonal;
@@ -1646,8 +1663,8 @@ function IDAStarFinder(opt) {
         }
     }
 
-    //When diagonal movement is allowed the manhattan heuristic is not admissible
-    //It should be octile instead
+    // When diagonal movement is allowed the manhattan heuristic is not
+    // admissible, it should be octile instead
     if (this.diagonalMovement === DiagonalMovement.Never) {
         this.heuristic = opt.heuristic || Heuristic.manhattan;
     } else {
@@ -1659,7 +1676,7 @@ function IDAStarFinder(opt) {
  * Find and return the the path. When an empty array is returned, either
  * no path is possible, or the maximum execution time is reached.
  *
- * @return {Array.<[number, number]>} The path, including both start and
+ * @return {Array<Array<number>>} The path, including both start and
  *     end positions.
  */
 IDAStarFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
@@ -1685,7 +1702,7 @@ IDAStarFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
      * @param {Node} The node currently expanding from.
      * @param {number} Cost to reach the given node.
      * @param {number} Maximum search depth (cut-off value).
-     * @param {{Array.<[number, number]>}} The found route.
+     * @param {Array<Array<number>>} The found route.
      * @param {number} Recursion depth.
      *
      * @return {Object} either a number with the new optimal cut-off depth,
@@ -1695,7 +1712,8 @@ IDAStarFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
         nodesVisited++;
 
         // Enforce timelimit:
-        if(this.timeLimit > 0 && new Date().getTime() - startTime > this.timeLimit * 1000) {
+        if (this.timeLimit > 0 &&
+            new Date().getTime() - startTime > this.timeLimit * 1000) {
             // Enforced as "path-not-found".
             return Infinity;
         }
@@ -1703,11 +1721,11 @@ IDAStarFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
         var f = g + h(node, end) * this.weight;
 
         // We've searched too deep for this iteration.
-        if(f > cutoff) {
+        if (f > cutoff) {
             return f;
         }
 
-        if(node == end) {
+        if (node == end) {
             route[depth] = [node.x, node.y];
             return node;
         }
@@ -1724,9 +1742,9 @@ IDAStarFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
 
         
         /*jshint -W084 *///Disable warning: Expected a conditional expression and instead saw an assignment
-        for(k = 0, min = Infinity; neighbour = neighbours[k]; ++k) {
+        for (k = 0, min = Infinity; neighbour = neighbours[k]; ++k) {
         /*jshint +W084 *///Enable warning: Expected a conditional expression and instead saw an assignment
-            if(this.trackRecursion) {
+            if (this.trackRecursion) {
                 // Retain a copy for visualisation. Due to recursion, this
                 // node may be part of other paths too.
                 neighbour.retainCount = neighbour.retainCount + 1 || 1;
@@ -1738,7 +1756,7 @@ IDAStarFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
 
             t = search(neighbour, g + cost(node, neighbour), cutoff, route, depth + 1);
 
-            if(t instanceof Node) {
+            if (t instanceof Node) {
                 route[depth] = [node.x, node.y];
 
                 // For a typical A* linked list, this would work:
@@ -1747,11 +1765,11 @@ IDAStarFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
             }
 
             // Decrement count, then determine whether it's actually closed.
-            if(this.trackRecursion && (--neighbour.retainCount) === 0) {
+            if (this.trackRecursion && (--neighbour.retainCount) === 0) {
                 neighbour.tested = false;
             }
 
-            if(t < min) {
+            if (t < min) {
                 min = t;
             }
         }
@@ -1771,8 +1789,7 @@ IDAStarFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
     var j, route, t;
 
     // With an overflow protection.
-    for(j = 0; true; ++j) {
-        //console.log("Iteration: " + j + ", search cut-off value: " + cutOff + ", nodes visited thus far: " + nodesVisited + ".");
+    for (j = 0; true; ++j) {
 
         route = [];
 
@@ -1780,14 +1797,13 @@ IDAStarFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
         t = search(start, 0, cutOff, route, 0);
 
         // Route not possible, or not found in time limit.
-        if(t === Infinity) {
+        if (t === Infinity) {
             return [];
         }
 
         // If t is a node, it's also the end node. Route is now
         // populated with a valid path to the end node.
-        if(t instanceof Node) {
-            //console.log("Finished at iteration: " + j + ", search cut-off value: " + cutOff + ", nodes visited: " + nodesVisited + ".");
+        if (t instanceof Node) {
             return route;
         }
 
@@ -1824,7 +1840,7 @@ JPFAlwaysMoveDiagonally.prototype.constructor = JPFAlwaysMoveDiagonally;
  * Search recursively in the direction (parent -> child), stopping only when a
  * jump point is found.
  * @protected
- * @return {Array.<[number, number]>} The x, y coordinate of the jump point
+ * @return {Array<Array<number>>} The x, y coordinate of the jump point
  *     found, or null if not found
  */
 JPFAlwaysMoveDiagonally.prototype._jump = function(x, y, px, py) {
@@ -1878,7 +1894,7 @@ JPFAlwaysMoveDiagonally.prototype._jump = function(x, y, px, py) {
  * Find the neighbors for the given node. If the node has a parent,
  * prune the neighbors based on the jump point search algorithm, otherwise
  * return all available neighbors.
- * @return {Array.<[number, number]>} The neighbors found.
+ * @return {Array<Array<number>>} The neighbors found.
  */
 JPFAlwaysMoveDiagonally.prototype._findNeighbors = function(node) {
     var parent = node.parent,
@@ -1975,7 +1991,7 @@ JPFMoveDiagonallyIfAtMostOneObstacle.prototype.constructor = JPFMoveDiagonallyIf
  * Search recursively in the direction (parent -> child), stopping only when a
  * jump point is found.
  * @protected
- * @return {Array.<[number, number]>} The x, y coordinate of the jump point
+ * @return {Array<Array<number>>} The x, y coordinate of the jump point
  *     found, or null if not found
  */
 JPFMoveDiagonallyIfAtMostOneObstacle.prototype._jump = function(x, y, px, py) {
@@ -2035,7 +2051,7 @@ JPFMoveDiagonallyIfAtMostOneObstacle.prototype._jump = function(x, y, px, py) {
  * Find the neighbors for the given node. If the node has a parent,
  * prune the neighbors based on the jump point search algorithm, otherwise
  * return all available neighbors.
- * @return {Array.<[number, number]>} The neighbors found.
+ * @return {Array<Array<number>>} The neighbors found.
  */
 JPFMoveDiagonallyIfAtMostOneObstacle.prototype._findNeighbors = function(node) {
     var parent = node.parent,
@@ -2132,7 +2148,7 @@ JPFMoveDiagonallyIfNoObstacles.prototype.constructor = JPFMoveDiagonallyIfNoObst
  * Search recursively in the direction (parent -> child), stopping only when a
  * jump point is found.
  * @protected
- * @return {Array.<[number, number]>} The x, y coordinate of the jump point
+ * @return {Array<Array<number>>} The x, y coordinate of the jump point
  *     found, or null if not found
  */
 JPFMoveDiagonallyIfNoObstacles.prototype._jump = function(x, y, px, py) {
@@ -2196,7 +2212,7 @@ JPFMoveDiagonallyIfNoObstacles.prototype._jump = function(x, y, px, py) {
  * Find the neighbors for the given node. If the node has a parent,
  * prune the neighbors based on the jump point search algorithm, otherwise
  * return all available neighbors.
- * @return {Array.<[number, number]>} The neighbors found.
+ * @return {Array<Array<number>>} The neighbors found.
  */
 JPFMoveDiagonallyIfNoObstacles.prototype._findNeighbors = function(node) {
     var parent = node.parent,
@@ -2308,7 +2324,7 @@ JPFNeverMoveDiagonally.prototype.constructor = JPFNeverMoveDiagonally;
  * Search recursively in the direction (parent -> child), stopping only when a
  * jump point is found.
  * @protected
- * @return {Array.<[number, number]>} The x, y coordinate of the jump point
+ * @return {Array<Array<number>>} The x, y coordinate of the jump point
  *     found, or null if not found
  */
 JPFNeverMoveDiagonally.prototype._jump = function(x, y, px, py) {
@@ -2354,7 +2370,7 @@ JPFNeverMoveDiagonally.prototype._jump = function(x, y, px, py) {
  * Find the neighbors for the given node. If the node has a parent,
  * prune the neighbors based on the jump point search algorithm, otherwise
  * return all available neighbors.
- * @return {Array.<[number, number]>} The neighbors found.
+ * @return {Array<Array<number>>} The neighbors found.
  */
 JPFNeverMoveDiagonally.prototype._findNeighbors = function(node) {
     var parent = node.parent,
@@ -2420,7 +2436,7 @@ var JPFMoveDiagonallyIfAtMostOneObstacle = _dereq_('./JPFMoveDiagonallyIfAtMostO
 
 /**
  * Path finder using the Jump Point Search algorithm
- * @param {object} opt
+ * @param {Object} opt
  * @param {function} opt.heuristic Heuristic function to estimate the distance
  *     (defaults to manhattan).
  * @param {DiagonalMovement} opt.diagonalMovement Condition under which diagonal
@@ -2464,7 +2480,7 @@ function JumpPointFinderBase(opt) {
 
 /**
  * Find and return the path.
- * @return {Array.<[number, number]>} The path, including both start and
+ * @return {Array<Array<number>>} The path, including both start and
  *     end positions.
  */
 JumpPointFinderBase.prototype.findPath = function(startX, startY, endX, endY, grid) {
